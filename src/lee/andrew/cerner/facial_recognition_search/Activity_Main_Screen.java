@@ -1,34 +1,58 @@
 package lee.andrew.cerner.facial_recognition_search;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
-public class Activity_Main_Screen extends ActionBarActivity {
+public class Activity_Main_Screen extends FragmentActivity {
+    ScrollerAdapter mScrollerAdapter;
+    ViewPager mViewPager;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_screen);
+        setContentView(R.layout.activity_pager);
+
+        mScrollerAdapter = new ScrollerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mScrollerAdapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity__main__screen, menu);
-        return true;
-    }
+    public class ScrollerAdapter extends FragmentPagerAdapter {
+        private static final int PAGE_COUNT = 3;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        public ScrollerAdapter(FragmentManager fm) {
+            super(fm);
         }
-        return super.onOptionsItemSelected(item);
+
+        @Override
+        public Fragment getItem(int i) {
+            Fragment fragment = new PageFragment();
+            Bundle args = new Bundle();
+            args.putInt("current_page", i + 1);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return PAGE_COUNT;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+            case 0:
+                return "Camera";
+            case 1:
+                return "Statistics";
+            case 2:
+                return "About";
+            }
+            return null;
+        }
     }
+
 }

@@ -21,7 +21,7 @@ public class Activity_Main_Screen extends FragmentActivity {
     }
 
     public class ScrollerAdapter extends FragmentPagerAdapter {
-        private static final int PAGE_COUNT = 3;
+        private static final int PAGE_COUNT = 1;
 
         public ScrollerAdapter(FragmentManager fm) {
             super(fm);
@@ -29,7 +29,7 @@ public class Activity_Main_Screen extends FragmentActivity {
 
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = new PageFragment();
+            Fragment fragment = new CameraFragment();
             Bundle args = new Bundle();
             args.putInt("current_page", i + 1);
             fragment.setArguments(args);

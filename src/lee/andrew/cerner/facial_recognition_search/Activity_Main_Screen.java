@@ -21,7 +21,7 @@ public class Activity_Main_Screen extends FragmentActivity {
     }
 
     public class ScrollerAdapter extends FragmentPagerAdapter {
-        private static final int PAGE_COUNT = 1;
+        private static final int PAGE_COUNT = 2;
 
         public ScrollerAdapter(FragmentManager fm) {
             super(fm);
@@ -29,7 +29,11 @@ public class Activity_Main_Screen extends FragmentActivity {
 
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = new CameraFragment();
+            Fragment fragment=null;
+            if(i==0)
+                fragment = new CameraFragment();
+            else if(i==1)
+                fragment = new AboutFragment();        
             Bundle args = new Bundle();
             args.putInt("current_page", i + 1);
             fragment.setArguments(args);
@@ -47,12 +51,13 @@ public class Activity_Main_Screen extends FragmentActivity {
             case 0:
                 return "Camera";
             case 1:
-                return "Statistics";
+                return "About";
             case 2:
                 return "About";
             }
             return null;
         }
     }
+
 
 }

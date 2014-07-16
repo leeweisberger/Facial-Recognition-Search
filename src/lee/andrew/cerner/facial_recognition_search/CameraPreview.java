@@ -13,6 +13,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -22,7 +23,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private PictureCallback mPicture = new PictureCallback() {
-
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File pictureFile = getOutputMediaFile(1);
@@ -42,7 +42,23 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }
         }
     };
+    public class TakePictureTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPostExecute(Void result) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+//            mCamera.startPreview();
+        }
 
+        @Override
+        protected Void doInBackground(Void... params) {
+            mCamera.takePicture(null, null, getPictureCallback());
+            return null;
+        }
+    }
     public CameraPreview(Context context, Camera camera) {
         super(context);
         mCamera = camera;
@@ -84,7 +100,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e){
             // ignore: tried to stop a non-existent preview
         }
-        
+
         try {
             Camera.Parameters parameters = mCamera.getParameters();
             List<Size> sizes = parameters.getSupportedPreviewSizes();
@@ -100,19 +116,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     /** Create a file Uri for saving an image or video */
     private Uri getOutputMediaFileUri(int type){
-          return Uri.fromFile(getOutputMediaFile(type));
+        return Uri.fromFile(getOutputMediaFile(type));
     }
 
     /** Create a File for saving an image or video */
     private File getOutputMediaFile(int type){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
-        
+
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                  Environment.DIRECTORY_PICTURES), "tempfolder");
+                Environment.DIRECTORY_PICTURES), "tempfolder");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
-    
+
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
@@ -120,20 +136,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 return null;
             }
         }
-    
+
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         if (type == 1){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-            "IMG_"+ timeStamp + ".jpg");
+                    "IMG_"+ timeStamp + ".jpg");
         } else {
             return null;
         }
-    
+
         return mediaFile;
     }
-    
+
     public PictureCallback getPictureCallback(){
         return mPicture;
     }

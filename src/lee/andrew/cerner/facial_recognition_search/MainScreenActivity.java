@@ -7,7 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-public class Activity_Main_Screen extends FragmentActivity {
+
+public class MainScreenActivity extends FragmentActivity {
     ScrollerAdapter mScrollerAdapter;
     ViewPager mViewPager;
 
@@ -23,8 +24,8 @@ public class Activity_Main_Screen extends FragmentActivity {
     public class ScrollerAdapter extends FragmentPagerAdapter {
         private static final int PAGE_COUNT = 2;
 
-        public ScrollerAdapter(FragmentManager fm) {
-            super(fm);
+        public ScrollerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override

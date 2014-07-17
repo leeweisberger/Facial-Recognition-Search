@@ -327,11 +327,10 @@ int id action_context_bar 0x7f05001f
 int id action_menu_divider 0x7f050016
 int id action_menu_presenter 0x7f050017
 int id action_mode_close_button 0x7f050026
-int id action_settings 0x7f050060
+int id action_settings 0x7f050061
 int id activity_chooser_view_content 0x7f050027
 int id always 0x7f05000b
 int id beginning 0x7f050011
-int id button1 0x7f05005f
 int id button_capture 0x7f05005c
 int id camera_preview 0x7f05005b
 int id checkbox 0x7f05002f
@@ -361,6 +360,7 @@ int id com_facebook_tooltip_bubble_view_top_pointer 0x7f050054
 int id com_facebook_usersettingsfragment_login_button 0x7f05005a
 int id com_facebook_usersettingsfragment_logo_image 0x7f050058
 int id com_facebook_usersettingsfragment_profile_name 0x7f050059
+int id continueButton 0x7f050060
 int id default_activity_button 0x7f05002a
 int id dialog 0x7f05000e
 int id disableHome 0x7f050008
@@ -370,6 +370,7 @@ int id end 0x7f050013
 int id expand_activities_button 0x7f050028
 int id expanded_menu 0x7f05002e
 int id facebookAuthButton 0x7f05005e
+int id facialAuthButton 0x7f05005f
 int id fragmentContainer 0x7f050040
 int id home 0x7f050014
 int id homeAsUp 0x7f050005

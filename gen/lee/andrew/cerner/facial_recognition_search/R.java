@@ -1294,11 +1294,10 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050026;
-        public static final int action_settings=0x7f050060;
+        public static final int action_settings=0x7f050061;
         public static final int activity_chooser_view_content=0x7f050027;
         public static final int always=0x7f05000b;
         public static final int beginning=0x7f050011;
-        public static final int button1=0x7f05005f;
         public static final int button_capture=0x7f05005c;
         public static final int camera_preview=0x7f05005b;
         public static final int checkbox=0x7f05002f;
@@ -1328,6 +1327,7 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_login_button=0x7f05005a;
         public static final int com_facebook_usersettingsfragment_logo_image=0x7f050058;
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f050059;
+        public static final int continueButton=0x7f050060;
         public static final int default_activity_button=0x7f05002a;
         public static final int dialog=0x7f05000e;
         public static final int disableHome=0x7f050008;
@@ -1337,6 +1337,7 @@ containing a value of this type.
         public static final int expand_activities_button=0x7f050028;
         public static final int expanded_menu=0x7f05002e;
         public static final int facebookAuthButton=0x7f05005e;
+        public static final int facialAuthButton=0x7f05005f;
         public static final int fragmentContainer=0x7f050040;
         public static final int home=0x7f050014;
         public static final int homeAsUp=0x7f050005;

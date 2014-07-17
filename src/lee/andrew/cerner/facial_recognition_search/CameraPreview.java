@@ -8,7 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.facebook.Session;
+
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -22,7 +25,9 @@ import android.view.SurfaceView;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private File mPhotoFile;
     private PictureCallback mPicture = new PictureCallback() {
+        
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             File pictureFile = getOutputMediaFile(1);
@@ -34,6 +39,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
+                LoginFragment.getPictureURL(Session.getActiveSession(), pictureFile);
                 fos.close();
             } catch (FileNotFoundException e) {
                 Log.d("Lee", "File not found: " + e.getMessage());
@@ -46,11 +52,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         @Override
         protected void onPostExecute(Void result) {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            mCamera.startPreview();
+            mCamera.startPreview();
         }
 
         @Override
@@ -104,9 +110,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             Camera.Parameters parameters = mCamera.getParameters();
             List<Size> sizes = parameters.getSupportedPreviewSizes();
-            parameters.setPreviewSize(sizes.get(0).width, sizes.get(0).height);
+            parameters.setPreviewSize(sizes.get(1).width, sizes.get(1).height);
+            
             mCamera.setParameters(parameters);
+            mCamera.setDisplayOrientation(90);
             mCamera.setPreviewDisplay(mHolder);
+           
             mCamera.startPreview();
 
         } catch (Exception e){
@@ -114,10 +123,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /** Create a file Uri for saving an image or video */
-    private Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
+    
 
     /** Create a File for saving an image or video */
     private File getOutputMediaFile(int type){
@@ -152,5 +158,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public PictureCallback getPictureCallback(){
         return mPicture;
+    }
+    
+    public File getPhotoFile(){
+        return mPhotoFile;
     }
 }

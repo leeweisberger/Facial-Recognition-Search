@@ -1,5 +1,7 @@
 package lee.andrew.cerner.facial_recognition_search;
 
+import java.io.File;
+
 import lee.andrew.cerner.facial_recognition_search.CameraPreview.TakePictureTask;
 import android.content.Intent;
 import android.hardware.Camera;
@@ -17,6 +19,8 @@ public class CameraFragment extends Fragment {
     private CameraPreview mPreview;
     private FrameLayout layout;
    
+    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +39,12 @@ public class CameraFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-//                TakePictureTask takePictureTask = CameraFragment.this.mPreview.new TakePictureTask();
-//                takePictureTask.execute(); 
-                mCamera.takePicture(null, null, mPreview.getPictureCallback());
+                TakePictureTask takePictureTask = CameraFragment.this.mPreview.new TakePictureTask();
+                takePictureTask.execute(); 
+//                mCamera.takePicture(null, null, mPreview.getPictureCallback());
+                File photoFile = mPreview.getPhotoFile();
 
-                Intent i = new Intent(getActivity(), LoginActivity.class);
-                startActivity(i);
+                
             }
         });
         return v;

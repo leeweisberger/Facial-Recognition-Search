@@ -1,5 +1,6 @@
 package lee.andrew.cerner.facial_recognition_search;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,11 +12,11 @@ import android.support.v4.view.ViewPager;
 public class MainScreenActivity extends FragmentActivity {
     ScrollerAdapter mScrollerAdapter;
     ViewPager mViewPager;
+    String facebookPassword;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pager);
-
         mScrollerAdapter = new ScrollerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mScrollerAdapter);

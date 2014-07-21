@@ -1,4 +1,4 @@
-package lee.andrew.cerner.facial_recognition_search;
+package lee.andrew.cerner.facial_recognition_search.server;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

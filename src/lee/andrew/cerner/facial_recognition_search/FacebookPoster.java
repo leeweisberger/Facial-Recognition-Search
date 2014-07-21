@@ -82,28 +82,11 @@ public class FacebookPoster {
         request.executeAsync();
     }
 
-
-
-//    public void getPerson(File pictureFile, FragmentActivity fa) throws InterruptedException {
-//        try {
-//            requestPerson(Session.getActiveSession(),pictureFile,fa);
-//        } catch (FileNotFoundException | InterruptedException e1) {
-//            e1.printStackTrace();
-//        }
-//    }
-
-//    public void getUserInfo(FragmentActivity fa) throws InterruptedException {
-//
-//        requestUserInfo(Session.getActiveSession(),fa);
-//
-//    }
-
     private void setAlert(final String name, final Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(false);
         if(name==null)
             builder.setTitle("Sorry, the subject could not be identified");
-
         else{
             builder.setTitle("Success! Identified as " + name);
             builder.setPositiveButton("View Info", new DialogInterface.OnClickListener() { 

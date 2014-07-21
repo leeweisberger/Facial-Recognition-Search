@@ -14,7 +14,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class ServerRequester extends AsyncTask<String, Void, SearchResult> {
-    private static final String URL = "10.184.187.151";
+    private static final String URL = "10.245.0.211";
     private static final int port = 12345;
     private Socket socket;
     private OutputStream os;
@@ -78,18 +78,16 @@ public class ServerRequester extends AsyncTask<String, Void, SearchResult> {
         String userURL = params[1];
         String user = params[2];
         String pass = params[3];
-        SearchResult r = new SearchResult();
-        r.addItem("name", "Lee");
-        return r;
-//        try {
-//            SearchResult items = getName(picURL,userURL,user,pass);
-//
-//            return items;
-//        } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            Log.d("errorr", "return null");
-//            return null;
-//        }
+       
+        try {
+            SearchResult items = getName(picURL,userURL,user,pass);
+
+            return items;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.d("errorr", "return null");
+            return null;
+        }
     }
 
 }

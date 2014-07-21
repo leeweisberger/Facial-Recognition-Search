@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -82,14 +83,93 @@ public class FacebookSuggestionParser {
         String friendListPage = parse.http.GetPageContent(parse.getFriendsUrl(timelineRedirect, parse.http));
         
         // 5. go to about page of identified person
-        System.out.println("Step 5");
         String friendAboutUrl = "https://www.facebook.com/" + parse.findFriendPage(result.get("name"), friendListPage) + "/about";
         System.out.println("friendAboutUrl: " + friendAboutUrl);
         Document friendAbout = (Document) Jsoup.parse(parse.http.GetPageContent(friendAboutUrl));
+      //  System.out.println("FriendAboutHTML: " + friendAbout);
         parse.addBasicInfo(friendAbout, result);
-        
+        parse.addMostRecentWork(friendAbout, result);
+        parse.addSalary(result);
+        parse.addCurrentCity(friendAbout, result);
+        parse.addContactInfo(friendAbout, result);
         return result;
 
+    }
+    
+    private void addSalary(HashMap<String, String> result) throws MalformedURLException, IOException {
+    	if(result.containsKey("Job")) {
+    		String salary = GlassDoorGetter.getSalary(result.get("Job"));
+    		if(salary != null)
+    			result.put("Salary", "$" + salary);
+    	}
+    }
+    
+    private void addContactInfo(Document friendInfo, HashMap<String, String> result) {
+    	ArrayList<String> keys = new ArrayList<String>();
+        ArrayList<String> values = new ArrayList<String>();
+        //System.out.println("friendInfo: " + friendInfo.toString());
+        String whyMark = friendInfo.toString().replaceAll("<!--", "");
+        whyMark = whyMark.replaceAll("-->", "");
+        
+        Document fuckYouMark = (Document) Jsoup.parse(whyMark);
+        Elements hidden = fuckYouMark.getElementsByClass("hidden_elem");
+        //System.out.println("hidden: " + hidden.toString());
+        Element info = searchForContactInfo(hidden);
+        System.out.println();
+      //  System.out.println("info: " + info);
+        if(info == null)
+            return;
+        Elements friendBasicInfoKeys = info.getElementsByClass("_3sts");
+        Elements friendBasicInfoValues = info.getElementsByClass("_480u");
+        for(Element e: friendBasicInfoKeys) {
+            keys.add(e.text());
+            System.out.println("Key added! " + e.text());
+        }
+        for(Element e: friendBasicInfoValues) {
+            values.add(e.text());
+            System.out.println("Value added! " + e.text());
+        }
+        for(int i=0; i<keys.size(); i++) {
+        	if(!(values.get(i).contains("Ask for"))) {
+        		if(!(values.get(i).contains("Edit"))) {
+        		result.put(keys.get(i), values.get(i));
+        		} else {
+        			result.put(keys.get(i), values.get(i).substring(5, values.get(i).length()).trim());
+        		}
+        	}
+        }
+    }
+    
+    private void addCurrentCity(Document friendInfo, HashMap<String, String> result) {
+    	 String whyMark = friendInfo.toString().replaceAll("<!--", "");
+         whyMark = whyMark.replaceAll("-->", "");
+         Document fuckYouMark = (Document) Jsoup.parse(whyMark);
+         Elements hidden = fuckYouMark.getElementsByClass("hidden_elem");
+         Element info = searchThroughShitPart2ElectricBoogaloo(hidden);
+         if(info == null) 
+        	 return;
+        // System.out.println("info: " + info);
+         Elements cities = info.getElementsByClass("fsl fwb fcb");
+         System.out.println("Cities: " + cities.toString());
+        // String currentCity = cities.first().text().toString();
+         if(cities.first() != null)
+        	 result.put("City", cities.first().text().toString());
+    }
+    
+    private void addMostRecentWork(Document friendInfo, HashMap<String, String> result) {
+    	 String whyMark = friendInfo.toString().replaceAll("<!--", "");
+         whyMark = whyMark.replaceAll("-->", "");
+         Document fuckYouMark = (Document) Jsoup.parse(whyMark);
+         Elements hidden = fuckYouMark.getElementsByClass("hidden_elem");
+         Element info = searchThroughShitPart2(hidden);
+         if(info == null) 
+        	 return;
+        // System.out.println("info: " + info);
+         Elements jobs = info.getElementsByClass("experienceContent");
+       //  System.out.println("Jobs: " + jobs.toString());
+         if(jobs.first() != null)
+        	 result.put("Job", jobs.first().text().toString());
+         System.out.println("Job added: " + jobs.first().text().toString());
     }
     
     private void addBasicInfo(Document friendInfo, HashMap<String, String> result) {
@@ -104,7 +184,7 @@ public class FacebookSuggestionParser {
         //System.out.println("hidden: " + hidden.toString());
         Element info = searchThroughShit(hidden);
         System.out.println();
-        System.out.println("info: " + info);
+      //  System.out.println("info: " + info);
         if(info == null)
             return;
         Elements friendBasicInfoKeys = info.getElementsByClass("_3sts");
@@ -115,11 +195,43 @@ public class FacebookSuggestionParser {
         }
         for(Element e: friendBasicInfoValues) {
             values.add(e.text());
-            System.out.println("Value added! " + e.text());
+          //  System.out.println("Value added! " + e.text());
         }
         for(int i=0; i<keys.size(); i++) {
-            result.put(keys.get(i), values.get(i));
+        	if(!(values.get(i).contains("Edit"))) 
+        		result.put(keys.get(i), values.get(i).trim());
+        	else {
+        		System.out.println("Adding value: " + values.get(i).substring(5, values.get(i).length()).trim());
+        		result.put(keys.get(i), values.get(i).substring(5, values.get(i).length()).trim());
+        	}
         }
+    }
+    
+    private Element searchForContactInfo(Elements shit) {
+    	for(Element e: shit) {
+            if(e.toString().contains("Mobile Phones")) {
+                return e;
+            }
+        }
+        return null;
+    }
+    
+    private Element searchThroughShitPart2ElectricBoogaloo(Elements shit) {
+    	for(Element e: shit) {
+            if(e.toString().contains("Current City")) {
+                return e;
+            }
+        }
+        return null;
+    }
+    
+    private Element searchThroughShitPart2(Elements shit) {
+    	for(Element e: shit) {
+            if(e.toString().contains("experienceTitle")) {
+                return e;
+            }
+        }
+        return null;
     }
     
     private Element searchThroughShit(Elements shit) {

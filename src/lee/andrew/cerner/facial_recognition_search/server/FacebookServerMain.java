@@ -61,6 +61,7 @@ public class FacebookServerMain extends Thread{
                 while(it.hasNext()) {
                     Map.Entry<String, String> temp = (Entry<String, String>) it.next();
                     dos.writeUTF(temp.getKey());
+                    System.out.println("Sending value: " + temp.getValue());
                     dos.writeUTF(temp.getValue());
                 }
             } else {

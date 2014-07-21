@@ -1,5 +1,6 @@
 package lee.andrew.cerner.facial_recognition_search;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -7,7 +8,7 @@ import java.util.TreeMap;
 public class SearchResult {
     private TreeMap<String,String> items;
     public SearchResult(){
-        items = new TreeMap<String,String>();
+        items = new TreeMap<String,String>(Collections.reverseOrder());
     }
     
     public String getName(){

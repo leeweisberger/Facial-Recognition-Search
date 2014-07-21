@@ -21,6 +21,8 @@ public class ResultViewerFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         SearchResult result = SearchResults.searchResults.getResultFromName(getActivity().getIntent().getStringExtra("result"));
+        
+        
         Set<String> resultKeysSet = result.getMap().keySet();
         String[] resultKeys = resultKeysSet.toArray(new String[resultKeysSet.size()]);
         ResultViewAdapter adapter = new ResultViewAdapter(getActivity(), resultKeys,result);

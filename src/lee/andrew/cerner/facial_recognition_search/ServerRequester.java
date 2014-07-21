@@ -14,7 +14,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class ServerRequester extends AsyncTask<String, Void, SearchResult> {
-    private static final String URL = "10.245.0.211";
+    private static final String URL = "10.184.187.169";
     private static final int port = 12345;
     private Socket socket;
     private OutputStream os;
@@ -58,8 +58,10 @@ public class ServerRequester extends AsyncTask<String, Void, SearchResult> {
                 String key = item;
                 if(key.equals("null"))
                     return null;
+                
                 String value = dis.readUTF();
-                items.addItem(key, value);
+                if(key.equals("Email"))
+                items.addItem(key, value.split(" ")[0]);
             }
             return items;
 

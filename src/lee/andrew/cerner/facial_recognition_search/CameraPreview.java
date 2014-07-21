@@ -8,28 +8,36 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.facebook.Session;
-
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.facebook.Session;
+
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+    private FragmentActivity fa;
+    
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private File mPhotoFile;
+    private static ProgressDialog progress;
+    
     private PictureCallback mPicture = new PictureCallback() {
         
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+
             File pictureFile = getOutputMediaFile(1);
             if (pictureFile == null){
                 Log.d("Lee", "Error creating media file, check storage permissions: ");
@@ -39,20 +47,25 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
-                LoginFragment.getPictureURL(Session.getActiveSession(), pictureFile);
+                RotateImage(pictureFile, 90);
+                deleteDialogue();
+                String name=null;
+                deleteDialogue();
+                new FacebookPoster().requestUserInfo(Session.getActiveSession(), fa, pictureFile);
+//                new FacebookPoster().getUserInfo(fa);
                 fos.close();
             } catch (FileNotFoundException e) {
                 Log.d("Lee", "File not found: " + e.getMessage());
             } catch (IOException e) {
                 Log.d("Lee", "Error accessing file: " + e.getMessage());
-            }
+            } 
         }
     };
     public class TakePictureTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPostExecute(Void result) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -68,7 +81,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public CameraPreview(Context context, Camera camera) {
         super(context);
         mCamera = camera;
-
+        fa=(FragmentActivity) context;
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.xf
         mHolder = getHolder();
@@ -155,6 +168,22 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         return mediaFile;
     }
+    
+    public static void RotateImage(File source, float angle)
+    {
+        Bitmap bm = BitmapFactory.decodeFile(source.getAbsolutePath());
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        Bitmap bmr = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(source);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        bmr.compress(Bitmap.CompressFormat.PNG, 90, out);
+    }
 
     public PictureCallback getPictureCallback(){
         return mPicture;
@@ -163,4 +192,17 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public File getPhotoFile(){
         return mPhotoFile;
     }
+    
+   public static void makeDialogue(Context context, String title, String message){
+       progress = new ProgressDialog(context);
+       progress.setTitle(title);
+       progress.setMessage(message);
+       progress.setCanceledOnTouchOutside(false);
+       progress.setCancelable(false);
+       progress.show();
+    }
+   
+   public static void deleteDialogue(){
+       progress.dismiss();
+   }
 }

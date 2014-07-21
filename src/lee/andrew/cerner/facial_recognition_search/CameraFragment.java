@@ -1,9 +1,9 @@
 package lee.andrew.cerner.facial_recognition_search;
 
-import java.io.File;
-
 import lee.andrew.cerner.facial_recognition_search.CameraPreview.TakePictureTask;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,13 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class CameraFragment extends Fragment {
     private Camera mCamera = null;
     private CameraPreview mPreview;
     private FrameLayout layout;
-   
-    
+    protected static TextView scanning;
+    protected static TextView identifying;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,22 +35,24 @@ public class CameraFragment extends Fragment {
         inflater.inflate(R.layout.fragment_camera, container, false);
         layout = (FrameLayout) v.findViewById(R.id.camera_preview);
         initializeCameraPreview();
+        scanning = (TextView) v.findViewById(R.id.scanning);
+        identifying = (TextView) v.findViewById(R.id.identifying);
+
         Button captureButton = (Button) v.findViewById(R.id.button_capture);
         captureButton.setOnClickListener(new View.OnClickListener() {
-            
 
             @Override
             public void onClick(View v) {
-                TakePictureTask takePictureTask = CameraFragment.this.mPreview.new TakePictureTask();
-                takePictureTask.execute(); 
-//                mCamera.takePicture(null, null, mPreview.getPictureCallback());
-                File photoFile = mPreview.getPhotoFile();
 
-                
+                CameraPreview.makeDialogue(getActivity(), "Preparing Image", "Wait while we prepare your image...");
+
+                TakePictureTask takePictureTask = CameraFragment.this.mPreview.new TakePictureTask();
+                takePictureTask.execute();
             }
         });
         return v;
     }
+
 
     public static Camera getCameraInstance() {
         Camera c = null;
@@ -66,15 +70,6 @@ public class CameraFragment extends Fragment {
         if (mCamera != null) {
             removeCameraPreview();
         }
-
-    }
-
-    private void removeCameraPreview() {
-        mCamera.setPreviewCallback(null);
-        mPreview.getHolder().removeCallback(mPreview);
-        mCamera.release();
-        mCamera = null;
-        Log.d("Lee", "Camera Released");
     }
 
     @Override
@@ -84,7 +79,7 @@ public class CameraFragment extends Fragment {
             initializeCameraPreview();
         }
     }
-    
+
     @Override
     public void onStop() {
         super.onStop();
@@ -98,5 +93,19 @@ public class CameraFragment extends Fragment {
         mPreview = new CameraPreview(getActivity(), mCamera);
         layout.addView(mPreview);
     }
+
+    private void removeCameraPreview() {
+        layout.removeView(mPreview);
+        mCamera.setPreviewCallback(null);
+        mPreview.getHolder().removeCallback(mPreview);
+        mCamera.release();
+        mCamera = null;
+        Log.d("Lee", "Camera Released");
+    }
+
+
     
+    
+    
+
 }

@@ -1,18 +1,19 @@
 package lee.andrew.cerner.facial_recognition_search;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 
 public class MainScreenActivity extends FragmentActivity {
-    ScrollerAdapter mScrollerAdapter;
-    ViewPager mViewPager;
-    String facebookPassword;
+    private ScrollerAdapter mScrollerAdapter;
+    private ViewPager mViewPager;
+    public String facebookPassword;
+    public SearchResults results;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +24,7 @@ public class MainScreenActivity extends FragmentActivity {
     }
 
     public class ScrollerAdapter extends FragmentPagerAdapter {
-        private static final int PAGE_COUNT = 2;
+        private static final int PAGE_COUNT = 3;
 
         public ScrollerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -35,7 +36,9 @@ public class MainScreenActivity extends FragmentActivity {
             if(i==0)
                 fragment = new CameraFragment();
             else if(i==1)
-                fragment = new AboutFragment();        
+                fragment = new ResultsFragment(); 
+            else if(i==2)
+                fragment = new AboutFragment(); 
             Bundle args = new Bundle();
             args.putInt("current_page", i + 1);
             fragment.setArguments(args);
@@ -53,7 +56,7 @@ public class MainScreenActivity extends FragmentActivity {
             case 0:
                 return "Camera";
             case 1:
-                return "About";
+                return "Results";
             case 2:
                 return "About";
             }
